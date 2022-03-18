@@ -18,14 +18,27 @@ namespace ASPShopBag.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
         //private readonly SignInManager<User> _sigInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public OrdersController(ApplicationDbContext context, UserManager<User> userManager)
+
+        public OrdersController(ApplicationDbContext context, 
+                                UserManager<User> userManager, 
+                                RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
+            //_roleManager = roleManager;
         }
 
+        public async Task<IActionResult> Test()
+        {
+            var userLoged = await _userManager.GetUserAsync(User);
+            var result = await _userManager.AddToRoleAsync(userLoged, Roles.Admin.ToString());   //"Admin");
+            var roles=_userManager.GetRolesAsync(userLoged);
+            return Content("OK !!!");
+        }
         // GET: Orders
+        [Authorize(Roles="Admin")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Orders
@@ -54,6 +67,7 @@ namespace ASPShopBag.Controllers
         }
 
         // GET: Orders/Create
+        [Authorize(Roles = "User, Admin")]
         public IActionResult Create()
         {
             OrdersVM model = new OrdersVM();
@@ -67,9 +81,9 @@ namespace ASPShopBag.Controllers
             ).ToList();
 
             // ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", "Id");
-            var idUser = _userManager.GetUserId(User);
-            var idUser1 = _userManager.GetUserId(HttpContext.User);
-            ViewBag.UserId = idUser1;
+            //var idUser = _userManager.GetUserId(User);
+            //var idUser1 = _userManager.GetUserId(HttpContext.User);
+            //ViewBag.UserId = idUser1;
             return View(model);
         }
 

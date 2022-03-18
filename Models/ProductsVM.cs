@@ -18,11 +18,9 @@ namespace ASPShopBag.Models
         public decimal Price { get; set; }
 
         public string Description { get; set; }
-       
+
         [Required(ErrorMessage = "This field is required")]
         public TypeFood Type { get; set; }
 
-        //[NotMapped]
-        //public virtual ICollection<SelectListItem> Orders { get; set; }
     }
 }

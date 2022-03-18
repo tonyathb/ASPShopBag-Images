@@ -52,7 +52,7 @@ namespace ASPShopBag.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required(ErrorMessage = "The field is requared!")]
-            [Display(Name = "Full Name")]
+            [Display(Name = "User Name")]
             public string UserName { get; set; }
 
             [Required]
@@ -90,12 +90,16 @@ namespace ASPShopBag.Areas.Identity.Pages.Account
                 var user = new User { 
                     UserName = Input.UserName, 
                     Email = Input.Email,
-                    FullName=Input.FullName
+                    FullName=Input.FullName,
+                    Role=Roles.User /// nyama ve4e da ima zna4enie za zadachata!!!
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    //var userLoged = await _userManager.GetUserAsync(User);
+                    var result1 = await _userManager.AddToRoleAsync(user, "User"); // !!!! dobavyame role=User
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -117,6 +121,7 @@ namespace ASPShopBag.Areas.Identity.Pages.Account
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
+                    
                 }
                 foreach (var error in result.Errors)
                 {

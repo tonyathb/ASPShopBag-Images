@@ -1,4 +1,6 @@
-﻿using ASPShopBag.Models;
+﻿using ASPShopBag.Data;
+using ASPShopBag.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,6 +20,7 @@ namespace ASPShopBag.Controllers
             _logger = logger;
         }
 
+      
         public IActionResult Index()
         {
             return View();

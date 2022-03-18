@@ -5,5 +5,5 @@ using System.Threading.Tasks;
 
 namespace ASPShopBag.Data
 {
-    public enum Roles { Usser, Admin }
+    public enum Roles { Guest, User, Admin }
 }
