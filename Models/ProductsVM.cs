@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,5 +23,10 @@ namespace ASPShopBag.Models
         [Required(ErrorMessage = "This field is required")]
         public TypeFood Type { get; set; }
 
+        //[Required]
+        //public string ImageId { get; set; }
+
+        [Required(ErrorMessage ="Избери снимка от компютъра си...")]
+        public List<IFormFile> ImagePath { get; set; }
     }
 }

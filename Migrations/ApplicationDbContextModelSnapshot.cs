@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace ASPShopBag.Data.Migrations
+namespace ASPShopBag.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -58,7 +58,7 @@ namespace ASPShopBag.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -66,6 +66,25 @@ namespace ASPShopBag.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("ASPShopBag.Data.ProductImages", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("ASPShopBag.Data.User", b =>
@@ -291,6 +310,17 @@ namespace ASPShopBag.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ASPShopBag.Data.ProductImages", b =>
+                {
+                    b.HasOne("ASPShopBag.Data.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -345,6 +375,8 @@ namespace ASPShopBag.Data.Migrations
             modelBuilder.Entity("ASPShopBag.Data.Product", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("ProductImages");
                 });
 
             modelBuilder.Entity("ASPShopBag.Data.User", b =>

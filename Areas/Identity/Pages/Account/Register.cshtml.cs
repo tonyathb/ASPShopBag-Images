@@ -99,7 +99,7 @@ namespace ASPShopBag.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     //var userLoged = await _userManager.GetUserAsync(User);
-                    var result1 = await _userManager.AddToRoleAsync(user, "User"); // !!!! dobavyame role=User
+                    var result1 = await _userManager.AddToRoleAsync(user, Roles.User.ToString()); // !!!! dobavyame role=User
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

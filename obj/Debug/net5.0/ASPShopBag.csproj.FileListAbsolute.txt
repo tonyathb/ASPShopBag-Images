@@ -166,12 +166,14 @@ C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Areas\Identity\Pag
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Areas\Identity\Pages\Account\ForgotPassword.cshtml.g.cs
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Create.cshtml.g.cs
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Delete.cshtml.g.cs
-C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Details.cshtml.g.cs
-C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Edit.cshtml.g.cs
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Index.cshtml.g.cs
-C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\ASPShopBag.csproj.AssemblyReference.cache
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Orders\Create.cshtml.g.cs
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Orders\Delete.cshtml.g.cs
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Orders\Details.cshtml.g.cs
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Orders\Edit.cshtml.g.cs
 C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Orders\Index.cshtml.g.cs
+C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Details1.cshtml.g.cs
+C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\ASPShopBag.csproj.AssemblyReference.cache
+C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Details.cshtml.g.cs
+C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Products\Edit1.cshtml.g.cs
+C:\Users\tbele\source\repos\ASPShopBag\obj\Debug\net5.0\Razor\Views\Orders\GetMyOrders.cshtml.g.cs

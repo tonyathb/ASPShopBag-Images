@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ASPShopBag.Data.Order>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1> >>> М О И Т Е  ПОРЪЧКИ <<< </h1>
+
+<p>
+    <a asp-action="Create">Създай НОВА поръчка</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                @Html.DisplayNameFor(model => model.Product)
+            </th>
+            <th colspan="2">
+               USER @*@Html.DisplayNameFor(model => model.UserId)*@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderedOn)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderedOn)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

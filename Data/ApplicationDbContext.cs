@@ -13,6 +13,6 @@ namespace ASPShopBag.Data
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
-
+        public DbSet<ProductImages> ProductImages { get; set; }
     }
 }

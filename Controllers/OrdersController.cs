@@ -18,12 +18,10 @@ namespace ASPShopBag.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
         //private readonly SignInManager<User> _sigInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        // private readonly RoleManager<IdentityRole> _roleManager;
 
-
-        public OrdersController(ApplicationDbContext context, 
-                                UserManager<User> userManager, 
-                                RoleManager<IdentityRole> roleManager)
+        public OrdersController(ApplicationDbContext context,
+                                UserManager<User> userManager)//,RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
@@ -34,16 +32,40 @@ namespace ASPShopBag.Controllers
         {
             var userLoged = await _userManager.GetUserAsync(User);
             var result = await _userManager.AddToRoleAsync(userLoged, Roles.Admin.ToString());   //"Admin");
-            var roles=_userManager.GetRolesAsync(userLoged);
+            var roles = _userManager.GetRolesAsync(userLoged);
             return Content("OK !!!");
         }
         // GET: Orders
-        [Authorize(Roles="Admin")]
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Index()//GetMyOrders()
+        {
+            if (User.IsInRole("Admin"))
+            {
+                var applicationDbContext = _context.Orders
+                .Include(o => o.Product)
+                .Include(o => o.User);
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var currentUser = _userManager.GetUserId(User);
+                var myOrders = _context.Orders
+                               .Include(o => o.Product)
+                               .Include(u => u.User)
+                               .Where(x => x.UserId == currentUser.ToString())
+                               .ToListAsync();
+
+                return View(await myOrders);
+            }
+
+        }
+        // GET: Orders
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Index1()
         {
             var applicationDbContext = _context.Orders
                 .Include(o => o.Product)
-                .Include(o=>o.User);
+                .Include(o => o.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -57,6 +79,7 @@ namespace ASPShopBag.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.Product)
+                .Include(u => u.User) //ako go nqma nqmam dostyp do poletata na User
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
@@ -71,7 +94,7 @@ namespace ASPShopBag.Controllers
         public IActionResult Create()
         {
             OrdersVM model = new OrdersVM();
-            model.UserId = _userManager.GetUserId(User);
+
             model.Products = _context.Products.Select(x => new SelectListItem
             {
                 Text = x.Name,
@@ -80,10 +103,7 @@ namespace ASPShopBag.Controllers
             }
             ).ToList();
 
-            // ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", "Id");
-            //var idUser = _userManager.GetUserId(User);
-            //var idUser1 = _userManager.GetUserId(HttpContext.User);
-            //ViewBag.UserId = idUser1;
+
             return View(model);
         }
 
@@ -98,7 +118,6 @@ namespace ASPShopBag.Controllers
             {
                 //ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", order.ProductId);
                 OrdersVM model = new OrdersVM();
-                model.UserId = _userManager.GetUserId(User);
                 model.Products = _context.Products.Select(x => new SelectListItem
                 {
                     Text = x.Name,
@@ -112,7 +131,7 @@ namespace ASPShopBag.Controllers
             {
                 ProductId = order.ProductId,
                 UserId = _userManager.GetUserId(User),
-                OrderedOn = order.OrderedOn
+                OrderedOn = DateTime.Now
             };
             _context.Add(modelToDB);
             await _context.SaveChangesAsync();
@@ -134,7 +153,6 @@ namespace ASPShopBag.Controllers
             }
             //Zarejdam OrdersVM
             OrdersVM model = new OrdersVM();
-            model.UserId = _userManager.GetUserId(User);
             model.Products = _context.Products.Select(x => new SelectListItem
             {
                 Text = x.Name,
@@ -161,13 +179,15 @@ namespace ASPShopBag.Controllers
 
             if (!ModelState.IsValid)
             {
-                //ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", order.ProductId);
                 return View(order);
             }
             //record in DB
             Order modeFromDB = new Order
             {
-                ProductId = order.ProductId
+                Id = id,
+                UserId = _userManager.GetUserId(User),
+                ProductId = order.ProductId,
+                OrderedOn = DateTime.Now
             };
             try
             {
@@ -185,8 +205,10 @@ namespace ASPShopBag.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Details", new { id = id });//(nameof(Index));
+            return RedirectToAction("Details", new { id = id });
         }
+
+        // GET: Orders/Edit/5
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -198,6 +220,7 @@ namespace ASPShopBag.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.Product)
+                .Include(u => u.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
@@ -212,7 +235,10 @@ namespace ASPShopBag.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                .Include(u => u.User)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            // .FindAsync(id);
             _context.Orders.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

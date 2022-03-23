@@ -7,16 +7,23 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ASPShopBag.Data;
 using ASPShopBag.Models;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace ASPShopBag.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
+        private string  wwwroot;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
+            wwwroot = $"{this._hostEnvironment.WebRootPath}";
         }
 
         // GET: Products
@@ -34,20 +41,25 @@ namespace ASPShopBag.Controllers
             }
 
             Product product = await _context.Products
+                .Include(img=>img.ProductImages)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
-            ProductsVM modelVM = new ProductsVM()
-            {
-                Name=product.Name,
-                Description=product.Description,
-                Price=product.Price,
-                Type=product.Type
-            };
 
-            return View(modelVM);
+            var imagePath = Path.Combine(wwwroot, "ProductImages");
+            ProductDetailsVM modelVM = new ProductDetailsVM()
+            {
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Type = product.Type,
+                ImagesPaths = _context.ProductImages
+                .Where(img => img.ProductId == product.Id)
+                .Select(x => $"/ProductImages/{x.ImagePath}").ToList<string>()
+            };
+           return View(modelVM);
         }
 
         // GET: Products/Create
@@ -56,20 +68,65 @@ namespace ASPShopBag.Controllers
             return View();
         }
 
+
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,Description,Type")] Product product)
+        public async Task<IActionResult> Create([FromForm] ProductsVM product)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(product);
             }
-            return View(product);
+
+            await this.CreateImages(product);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        ///
+        public async Task CreateImages(ProductsVM model)
+        {
+            Product productToDb = new Product()
+            {
+                Name = model.Name,
+                Price = model.Price,
+                Description = model.Description
+            };
+            await _context.Products.AddAsync(productToDb);
+            await this._context.SaveChangesAsync();
+
+            //var wwwroot = $"{this._hostEnvironment.WebRootPath}";
+            //създаваме папката images, ако не съществува
+            Directory.CreateDirectory($"{wwwroot}/ProductImages/");
+            var imagePath = Path.Combine(wwwroot, "ProductImages");
+            string uniqueFileName = null;
+            if (model.ImagePath.Count > 0)
+            {
+                for (int i = 0; i < model.ImagePath.Count; i++)
+                {
+                    ProductImages dbImage = new ProductImages()
+                    {
+                        ProductId = productToDb.Id,
+                        Product = productToDb
+                    };//id се създава автоматично при създаване на обект
+                    if (model.ImagePath[i] != null)
+                    {
+                        uniqueFileName = dbImage.Id + "_" + model.ImagePath[i].FileName;
+                        string filePath = Path.Combine(imagePath, uniqueFileName);
+                        using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.ImagePath[i].CopyToAsync(fileStream);
+                        }
+
+                        dbImage.ImagePath = uniqueFileName;
+                        await _context.ProductImages.AddAsync(dbImage);
+                        await this._context.SaveChangesAsync();
+                    }
+                }
+            }
         }
 
         // GET: Products/Edit/5
@@ -87,15 +144,18 @@ namespace ASPShopBag.Controllers
             }
             //2. Създавм модела, с който ще визуализирам за промяна на стойностите
             //3. Пълня от БД в полетата на екрана
-            ProductsVM model = new ProductsVM
+            ProductDetailsVM model = new ProductDetailsVM
             {
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                Type = product.Type
+                Type = product.Type,
+                ImagesPaths = _context.ProductImages
+                .Where(img => img.ProductId == product.Id)
+                .Select(x => $"/ProductImages/{x.ImagePath}").ToList<string>()
             };
-
+            
             return View(model);
         }
 
@@ -104,7 +164,7 @@ namespace ASPShopBag.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Description,Type")] ProductsVM product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Description,Type")] ProductDetailsVM product)
         {
             //1. Намирам записа в БД
             Product modelToDB = await _context.Products.FindAsync(id);
