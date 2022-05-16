@@ -17,7 +17,7 @@ namespace ASPShopBag.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
-        private string  wwwroot;
+        private string wwwroot;
 
         public ProductsController_Copy(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
@@ -41,7 +41,7 @@ namespace ASPShopBag.Controllers
             }
 
             Product product = await _context.Products
-                .Include(img=>img.ProductImages)
+                .Include(img => img.ProductImages)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -59,16 +59,12 @@ namespace ASPShopBag.Controllers
                 .Where(img => img.ProductId == product.Id)
                 .Select(x => $"/ProductImages/{x.ImagePath}").ToList<string>()
             };
-           return View(modelVM);
+            return View(modelVM);
         }
 
-        // GET: Products/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+
         ///
-        public async Task CreateImages(ProductsVM model)
+        private async Task CreateImages(ProductsVM model)
         {
             Product productToDb = new Product()
             {
@@ -101,7 +97,7 @@ namespace ASPShopBag.Controllers
                         {
                             await model.ImagePath[i].CopyToAsync(fileStream);
                         }
-                        
+
                         dbImage.ImagePath = uniqueFileName;
                         await _context.ProductImages.AddAsync(dbImage);
                         await this._context.SaveChangesAsync();
@@ -109,10 +105,13 @@ namespace ASPShopBag.Controllers
                 }
             }
         }
+        // GET: Products/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] ProductsVM product)

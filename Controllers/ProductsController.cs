@@ -10,6 +10,7 @@ using ASPShopBag.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using ASPShopBag.Services;
 
 namespace ASPShopBag.Controllers
 {
@@ -19,17 +20,23 @@ namespace ASPShopBag.Controllers
         private readonly IWebHostEnvironment _hostEnvironment;
         private string  wwwroot;
 
-        public ProductsController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
+        public ProductsController(ApplicationDbContext context,IWebHostEnvironment hostEnvironment)
         {
             _context = context;
-            _hostEnvironment = hostEnvironment;
-            wwwroot = $"{this._hostEnvironment.WebRootPath}";
+              _hostEnvironment = hostEnvironment;
+              wwwroot = $"{this._hostEnvironment.WebRootPath}";
         }
 
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            List<Product> model = await _context.Products.Include(img=>img.ProductImages).ToListAsync();
+            foreach (var item in model)
+            {
+                item.ProductImages = _context.ProductImages.Where(x => x.ProductId == item.Id).ToList();
+            }
+            
+            return View(model);
         }
 
         // GET: Products/Details/5
@@ -80,54 +87,13 @@ namespace ASPShopBag.Controllers
             {
                 return View(product);
             }
-
-            await this.CreateImages(product);
+            ImagesBuilder imagesBuilder = new ImagesBuilder(_context,_hostEnvironment);
+            await imagesBuilder.CreateImages(product);
 
             return RedirectToAction(nameof(Index));
         }
 
-        ///
-        public async Task CreateImages(ProductsVM model)
-        {
-            Product productToDb = new Product()
-            {
-                Name = model.Name,
-                Price = model.Price,
-                Description = model.Description
-            };
-            await _context.Products.AddAsync(productToDb);
-            await this._context.SaveChangesAsync();
-
-            //var wwwroot = $"{this._hostEnvironment.WebRootPath}";
-            //създаваме папката images, ако не съществува
-            Directory.CreateDirectory($"{wwwroot}/ProductImages/");
-            var imagePath = Path.Combine(wwwroot, "ProductImages");
-            string uniqueFileName = null;
-            if (model.ImagePath.Count > 0)
-            {
-                for (int i = 0; i < model.ImagePath.Count; i++)
-                {
-                    ProductImages dbImage = new ProductImages()
-                    {
-                        ProductId = productToDb.Id,
-                        Product = productToDb
-                    };//id се създава автоматично при създаване на обект
-                    if (model.ImagePath[i] != null)
-                    {
-                        uniqueFileName = dbImage.Id + "_" + model.ImagePath[i].FileName;
-                        string filePath = Path.Combine(imagePath, uniqueFileName);
-                        using (Stream fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await model.ImagePath[i].CopyToAsync(fileStream);
-                        }
-
-                        dbImage.ImagePath = uniqueFileName;
-                        await _context.ProductImages.AddAsync(dbImage);
-                        await this._context.SaveChangesAsync();
-                    }
-                }
-            }
-        }
+       
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)

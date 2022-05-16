@@ -26,8 +26,15 @@ using ASPShopBag.Models;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 3 "C:\Users\tbele\source\repos\ASPShopBag\Views\_ViewImports.cshtml"
+using ASPShopBag.Data;
+
+#line default
+#line hidden
+#nullable disable
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"d6c579f3af9b6b3f48329e3ecea4b13fd54e8f69", @"/Views/Orders/GetMyOrders.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"85cfe872bacee989bb89597cb0d67f714bcecb1d", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"088bddd60428595011e5cbe2941f9bcd942ae2a0", @"/Views/_ViewImports.cshtml")]
     public class Views_Orders_GetMyOrders : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<IEnumerable<ASPShopBag.Data.Order>>
     {
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("asp-action", "Create", global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);
@@ -68,7 +75,7 @@ using ASPShopBag.Models;
 #line hidden
 #nullable disable
             WriteLiteral("\r\n<h1> >>> М О И Т Е  ПОРЪЧКИ <<< </h1>\r\n\r\n<p>\r\n    ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f694566", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f694735", async() => {
                 WriteLiteral("Създай НОВА поръчка");
             }
             );
@@ -149,7 +156,7 @@ using ASPShopBag.Models;
 #line hidden
 #nullable disable
             WriteLiteral("\r\n            </td>\r\n            <td>\r\n                ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f698433", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f698602", async() => {
                 WriteLiteral("Edit");
             }
             );
@@ -180,7 +187,7 @@ using ASPShopBag.Models;
             Write(__tagHelperExecutionContext.Output);
             __tagHelperExecutionContext = __tagHelperScopeManager.End();
             WriteLiteral(" |\r\n                ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f6910589", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f6910758", async() => {
                 WriteLiteral("Details");
             }
             );
@@ -211,7 +218,7 @@ using ASPShopBag.Models;
             Write(__tagHelperExecutionContext.Output);
             __tagHelperExecutionContext = __tagHelperScopeManager.End();
             WriteLiteral(" |\r\n                ");
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f6912752", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d6c579f3af9b6b3f48329e3ecea4b13fd54e8f6912921", async() => {
                 WriteLiteral("Delete");
             }
             );

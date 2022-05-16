@@ -70,9 +70,9 @@ namespace ASPShopBag.Areas.Identity.Pages.Account
             [Display(Name = "Full Name")]
             public string FullName { get; set; }
 
-            [Required(ErrorMessage = "The field is requared!")]
-            [Display(Name = "Role")]
-            public Roles Role{ get; set; }
+            //[Required(ErrorMessage = "The field is requared!")]
+            //[Display(Name = "Role")]
+            //public Roles Role{ get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -87,20 +87,23 @@ namespace ASPShopBag.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User { 
+                User user = new User {                    
                     UserName = Input.UserName, 
                     Email = Input.Email,
-                    FullName=Input.FullName,
-                    Role=Roles.User /// nyama ve4e da ima zna4enie za zadachata!!!
+                    FullName=Input.FullName
+                    //Role=Roles.User /// nyama ve4e da ima zna4enie za zadachata!!!
                 };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                var result = await _userManager.CreateAsync(user, Input.Password);//Create NEW USER !!!!
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     //var userLoged = await _userManager.GetUserAsync(User);
-                    var result1 = await _userManager.AddToRoleAsync(user, Roles.User.ToString()); // !!!! dobavyame role=User
+                    var result1 = await _userManager.AddToRoleAsync(user, "User"); // !!!! dobavyame role=User
+                    if (!result1.Succeeded)
+                    {
 
+                    }
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

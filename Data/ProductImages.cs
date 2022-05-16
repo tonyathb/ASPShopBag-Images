@@ -16,7 +16,7 @@ namespace ASPShopBag.Data
 
         //wrazka M:1
         [Required]
-        //[ForeignKey("Product")]
+        //[ForeignKey("Reservation")]
         public int ProductId { get; set; }
 
         public Product Product { get; set; }

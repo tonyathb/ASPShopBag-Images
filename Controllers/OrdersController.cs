@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 namespace ASPShopBag.Controllers
 {
     [Authorize]
+
+
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -58,16 +60,7 @@ namespace ASPShopBag.Controllers
                 return View(await myOrders);
             }
 
-        }
-        // GET: Orders
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Index1()
-        {
-            var applicationDbContext = _context.Orders
-                .Include(o => o.Product)
-                .Include(o => o.User);
-            return View(await applicationDbContext.ToListAsync());
-        }
+        }        
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -102,7 +95,6 @@ namespace ASPShopBag.Controllers
                 Selected = (x.Id == model.ProductId)
             }
             ).ToList();
-
 
             return View(model);
         }
